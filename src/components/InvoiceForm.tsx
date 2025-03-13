@@ -79,21 +79,18 @@ const InvoiceForm: React.FC<Props> = ({ onSubmit }) => {
 
   // Calculate totals
   React.useEffect(() => {
-    const subscription = watch((value: any, { name }: { name?: string }) => {
+    const subscription = watch((value: unknown, { name }: { name?: string }) => {
       if (name?.startsWith('items')) {
-        const items = value.items || [];
-        const total = items.reduce((sum: number, item: { quantity?: number; price?: number }) => 
-          sum + (item.quantity || 0) * (item.price || 0), 0);
+        const formData = value as InvoiceData;
+        const items = formData.items || [];
+        const total = items.reduce((sum: number, item) => 
+          sum + ((item?.quantity || 0) * (item?.price || 0)), 0);
 
         setValue('total', total);
       }
     });
 
-    return () => {
-      if (subscription && typeof subscription.unsubscribe === 'function') {
-        subscription.unsubscribe();
-      }
-    };
+    return () => subscription.unsubscribe();
   }, [watch, setValue]);
 
   // Add suggested products with their prices
