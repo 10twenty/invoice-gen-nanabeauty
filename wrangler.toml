@@ -1,0 +1,12 @@
+name = "invoice-gen-nanabeauty"
+compatibility_date = "2024-03-15"
+
+[build]
+command = "npm run build"
+cwd = "."
+
+[site]
+bucket = ".next"
+
+[pages]
+build_output_dir = "out" 
