@@ -40,34 +40,34 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<Uint8Array>
   doc.setFontSize(16);
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'normal');
-  doc.text('INVOICE', 105, 35, { align: 'center' });
+  doc.text('發票', 105, 35, { align: 'center' });
 
   // Invoice Details
   doc.setFontSize(10);
   doc.setTextColor(75, 85, 99);
-  doc.text(`Invoice #: ${data.invoiceNumber}`, 20, 60);
-  doc.text(`Date: ${data.date}`, 20, 65);
+  doc.text(`發票號碼：${data.invoiceNumber}`, 20, 60);
+  doc.text(`日期：${data.date}`, 20, 65);
 
   // Company Information
   doc.setFontSize(10);
   doc.setTextColor(75, 85, 99);
-  doc.text('From:', 20, 80);
+  doc.text('寄件人：', 20, 80);
   doc.setFont('helvetica', 'bold');
   doc.text(data.companyName, 20, 85);
   doc.setFont('helvetica', 'normal');
   doc.text(data.companyAddress, 20, 90);
-  doc.text(`Phone: ${data.companyPhone}`, 20, 95);
-  doc.text(`Email: ${data.companyEmail}`, 20, 100);
+  doc.text(`電話：${data.companyPhone}`, 20, 95);
+  doc.text(`電郵：${data.companyEmail}`, 20, 100);
 
   // Client Information
   doc.setFontSize(10);
   doc.setTextColor(75, 85, 99);
-  doc.text('To:', 20, 120);
+  doc.text('收件人：', 20, 120);
   doc.setFont('helvetica', 'bold');
   doc.text(data.clientName, 20, 125);
   doc.setFont('helvetica', 'normal');
-  if (data.clientPhone) doc.text(`Phone: ${data.clientPhone}`, 20, 130);
-  if (data.clientEmail) doc.text(`Email: ${data.clientEmail}`, 20, 135);
+  if (data.clientPhone) doc.text(`電話：${data.clientPhone}`, 20, 130);
+  if (data.clientEmail) doc.text(`電郵：${data.clientEmail}`, 20, 135);
 
   // Items Table
   const tableData = data.items.map(item => [
@@ -78,11 +78,11 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<Uint8Array>
   ]);
 
   // Add total row
-  tableData.push(['', '', 'Total:', `$${(data.total || 0).toFixed(2)}`]);
+  tableData.push(['', '', '總計：', `$${(data.total || 0).toFixed(2)}`]);
 
   autoTable(doc, {
     startY: 150,
-    head: [['Description', 'Quantity', 'Price', 'Amount']],
+    head: [['商品描述', '數量', '單價', '金額']],
     body: tableData,
     theme: 'grid',
     styles: {
@@ -108,17 +108,17 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<Uint8Array>
   if (data.notes) {
     doc.setFontSize(10);
     doc.setTextColor(75, 85, 99);
-    doc.text('Notes:', 20, (doc as any).lastAutoTable.finalY + 20);
+    doc.text('備註：', 20, (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 20);
     doc.setFontSize(9);
-    doc.text(data.notes, 20, (doc as any).lastAutoTable.finalY + 25);
+    doc.text(data.notes, 20, (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 25);
   }
 
   // Footer
   const pageHeight = doc.internal.pageSize.height;
   doc.setFontSize(8);
   doc.setTextColor(156, 163, 175);
-  doc.text('Thank you for your business!', 105, pageHeight - 20, { align: 'center' });
-  doc.text(`© ${new Date().getFullYear()} Na Na Beauty. All rights reserved.`, 105, pageHeight - 15, { align: 'center' });
+  doc.text('感謝您的惠顧！', 105, pageHeight - 20, { align: 'center' });
+  doc.text(`© ${new Date().getFullYear()} Na Na Beauty. 版權所有。`, 105, pageHeight - 15, { align: 'center' });
 
   // Add decorative elements to footer
   doc.setDrawColor(99, 102, 241);
